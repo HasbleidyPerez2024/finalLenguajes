@@ -1,13 +1,11 @@
 package controller;
 
-import Service.CrudUserImpl;
 import Service.CrudUsers;
-import model.User;
-
-import java.util.List;
+import Service.CrudUserImpl;
 
 public class ControllerUser {
-
+    private final String versionProtocol = "HTTP/1.1";
+    private final String connectionString = "http://localhost:8080/api/users";
     private String url;
     private String headers;
     private String body;
@@ -29,39 +27,39 @@ public class ControllerUser {
         this.userService = new CrudUserImpl();
     }
 
-    public String getUsers(){
-        List<User> users = userService.readAll();
-        if (users.isEmpty()){
-            return "No hay usuarios para mostrar";
-        }
-
-        StringBuilder response = new StringBuilder("Lista de usuarios:\n");
-        for (User user : users){
-            response.append(user.toString()).append("\n");
-        }
-        return response.toString();
+    public String getUsers() {
+        validateConnection();
+        userService.findAll();
+        return "***********************";
     }
 
-    public String findUserById(int id){
-        User user =  userService.findById(id);
-        if (user == null){
-            return "Usuario no encontrado";
-        }
-        return user.toString();
+    public String getUsersById(int id) {
+        validateConnection();
+        userService.findById(id);
+        return "**************************";
     }
 
-    public String postUser(){
-        try {
-            String[] fields = body.split(",");
-            String name = fields[2].trim();
-            String email = fields[1].trim();
-            int phone = Integer.parseInt(fields[0].trim());
+    public String postUser() {
+        validateConnection();
+        userService.create(body);
+        return "***********************+*";
+    }
 
-            User newUser = new User(name, email, phone);
-            userService.create(newUser);
-            return "Usuario creado: " + newUser.toString();
-        } catch (Exception e){
-            return "Error en creación de usuario: " + e.getMessage();
+    public String putUserById(int id) {
+        validateConnection();
+        userService.updateById(body, id);
+        return "*************************";
+    }
+
+    public String deleteUserById(int id) {
+        validateConnection();
+        userService.deleteById(id);
+        return "*************************";
+    }
+
+    private void validateConnection() {
+        if (!url.equals(connectionString)) {
+            throw new RuntimeException("No fue posible coneción con la URL " + url);
         }
     }
 }

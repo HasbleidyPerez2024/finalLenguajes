@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CrudUsers {
 
-    void create(User user);
+    void create(String user);
     List<User> readAll();
-    void updateById(User updateUser, int id);
+    void updateById(String updateUser, int id);
     void deleteById(int id);
     void findAll();
     public User findById(int id);
